@@ -1,4 +1,4 @@
---This is the practice I did as part of SQL course via Khan Academy. One Table.
+--This is the practice I did as part of SQL course via Khan Academy.
 --data from: https://gist.github.com/pamelafox/ad4f6abbaac0a48aa781 provided by Khan Academy
 
 --What data does the table consist of?
@@ -21,9 +21,9 @@ FROM countries;
 SELECT name, population AS population_below_average
 FROM countries
 WHERE population <= (
-    SELECT AVG(population) 
-    FROM countries
-    ) 
+SELECT AVG(population) 
+FROM countries
+) 
 ORDER BY population DESC LIMIT 20;
 
 --How many countries have a population below the average?
@@ -70,16 +70,16 @@ FROM countries;
 SELECT name, median_age 
 FROM countries 
 WHERE median_age >= (
-    SELECT AVG(median_age) 
-    FROM countries) 
+SELECT AVG(median_age) 
+FROM countries) 
 ORDER BY median_age DESC; 
 
 --Which countries have median age lower to the average median age?
 SELECT name, median_age 
 FROM countries 
 WHERE median_age < (
-    SELECT AVG(median_age) 
-    FROM countries) 
+SELECT AVG(median_age) 
+FROM countries) 
 ORDER BY median_age DESC;
 What is the average population of all countries?
 
@@ -201,24 +201,24 @@ FROM countries ORDER BY density_per_sq_km ASC LIMIT 10;
 --"Sparse" for countries with low density, "Not very crowded" for medium-low density, "Moderately Crowded" for medium density, "Crowded" for high density, and "Extremely Crowded" for very high density
 
 SELECT name, density_per_sq_km, 
-CASE
-    WHEN density_per_sq_km <= 10 THEN "Sparse"
-    WHEN density_per_sq_km >= 11 AND density_per_sq_km < 50 THEN "Not very crowded"
-    WHEN density_per_sq_km >= 50 AND density_per_sq_km < 100 THEN "Moderately Crowded"
-    WHEN density_per_sq_km >= 100 AND density_per_sq_km < 500 THEN "Crowded"
-    ELSE "Extremely Crowded"
-END AS density_category
+    CASE
+        WHEN density_per_sq_km <= 10 THEN "Sparse"
+        WHEN density_per_sq_km >= 11 AND density_per_sq_km < 50 THEN "Not very crowded"
+        WHEN density_per_sq_km >= 50 AND density_per_sq_km < 100 THEN "Moderately Crowded"
+        WHEN density_per_sq_km >= 100 AND density_per_sq_km < 500 THEN "Crowded"
+        ELSE "Extremely Crowded"
+    END AS density_category
 FROM countries
 ORDER BY density_per_sq_km DESC;
 
 --How many countries fall into each of the density categories?
 SELECT 
-CASE
-    WHEN density_per_sq_km <= 10 THEN "Sparse"
-    WHEN density_per_sq_km >= 11 AND density_per_sq_km < 50 THEN "Not very crowded"
-    WHEN density_per_sq_km >= 50 AND density_per_sq_km < 100 THEN "Moderately Crowded"
-    WHEN density_per_sq_km >= 100 AND density_per_sq_km < 500 THEN "Crowded"
-    ELSE "Extremely Crowded"
+    CASE
+        WHEN density_per_sq_km <= 10 THEN "Sparse"
+        WHEN density_per_sq_km >= 11 AND density_per_sq_km < 50 THEN "Not very crowded"
+        WHEN density_per_sq_km >= 50 AND density_per_sq_km < 100 THEN "Moderately Crowded"
+        WHEN density_per_sq_km >= 100 AND density_per_sq_km < 500 THEN "Crowded"
+        ELSE "Extremely Crowded"
 END AS density_category,
 COUNT(*) AS number_of_countries
 FROM countries
