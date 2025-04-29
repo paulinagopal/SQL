@@ -5,9 +5,9 @@ This repository showcases examples of SQL queries and projects I’ve worked on 
 
 # You'll find:
 
-- Practice queries for common business-like scenarios
+- Practice queries for common business-like scenarios.
 
-- Subqueries, joins, aggregations and filtering examples
+- Subqueries, joins, aggregations and filtering examples.
 
 - Clean, well-commented code for readability as I continue building and refining my skills.
 
