@@ -1,0 +1,226 @@
+--This is the practice I did as part of SQL course via Khan Academy.
+--data from: https://gist.github.com/pamelafox/ad4f6abbaac0a48aa781 provided by Khan Academy
+
+--What data does the table consist of?
+SELECT * 
+FROM countries;
+
+--Which country has the highest population?
+SELECT name, MAX(population) 
+FROM countries;
+
+--Which country has the lowest population?
+SELECT name, MIN(population) 
+FROM countries;
+
+--What is the average population of all countries?
+SELECT AVG(population) 
+FROM countries;
+
+--Which countries have a population below the average?
+SELECT name, population AS population_below_average
+FROM countries
+WHERE population <= (
+SELECT AVG(population) 
+FROM countries
+) 
+ORDER BY population DESC LIMIT 20;
+
+--How many countries have a population below the average?
+SELECT COUNT(name) AS countries_population_below_avg 
+FROM (
+SELECT name, population AS population_below_average
+FROM countries
+WHERE population <= (
+SELECT AVG(population) 
+FROM countries)
+) AS below_avg;
+
+--Which countries have a population above the average?
+SELECT name, population AS population_above_average 
+FROM countries
+WHERE population >= (
+SELECT AVG(population) 
+FROM countries) 
+ORDER BY population DESC LIMIT 20;
+
+--How many countries have a population above the average?
+SELECT COUNT(name) AS countries_population_above_avg 
+FROM (
+SELECT name, population AS population_above_average 
+FROM countries
+WHERE population >= (
+SELECT AVG(population) 
+FROM countries)
+) AS above_avg;
+
+--Which country has highest net number of migrants?
+SELECT name, MAX(net_migrants) 
+FROM countries;
+
+--Which country has lowest net number of migrants?
+SELECT name, MIN(net_migrants) 
+FROM countries;
+
+--What's the average median age in the world?
+SELECT AVG(median_age) 
+FROM countries;
+
+--Which countries have median age higher or equal to the average median age?
+SELECT name, median_age 
+FROM countries 
+WHERE median_age >= (
+SELECT AVG(median_age) 
+FROM countries) 
+ORDER BY median_age DESC; 
+
+--Which countries have median age lower to the average median age?
+SELECT name, median_age 
+FROM countries 
+WHERE median_age < (
+SELECT AVG(median_age) 
+FROM countries) 
+ORDER BY median_age DESC;
+What is the average population of all countries?
+
+--How many countries have median age below the average?
+SELECT COUNT(name) AS num_countries_below_median_age 
+FROM (
+SELECT name, median_age 
+FROM countries 
+WHERE median_age <= (
+SELECT AVG(median_age) FROM countries
+) 
+ORDER BY median_age DESC
+) AS below_median;
+
+--How many countries have median age above the average?
+SELECT COUNT(name) as num_countries_above_median_age 
+FROM (
+SELECT name, median_age 
+FROM countries 
+WHERE median_age >= (
+SELECT AVG(median_age) 
+FROM countries) 
+ORDER BY median_age DESC
+) AS above_median;
+
+--What percentage of the world's population does each country represent?
+SELECT name, percent_of_world_pop 
+FROM countries;
+
+--Which countries represent more than 10% of the world’s population?
+SELECT name, percent_of_world_pop 
+FROM countries
+WHERE percent_of_world_pop > 10;
+
+--Which 20 countries represent less than 1% of the population?
+SELECT name, percent_of_world_pop 
+FROM countries
+WHERE percent_of_world_pop < 1 LIMIT 20;
+
+--How many countries represent less than 1% of the world’s population?
+SELECT COUNT(name) AS count_countries_below_1_percent_population FROM (
+SELECT name, percent_of_world_pop 
+FROM countries
+WHERE percent_of_world_pop < 1);
+
+--Which 10 countries represent more than or equal to 1% of the population?
+SELECT name, percent_of_world_pop 
+FROM countries
+WHERE percent_of_world_pop >= 1 LIMIT 10;
+
+--How many countries represent more than or equal to 1% of the population?
+SELECT COUNT(*) AS count_countries_above_1_percent_population 
+FROM (
+SELECT name, percent_of_world_pop 
+FROM countries
+WHERE percent_of_world_pop >= 1
+);
+
+--Which 10 countries have the highest population change?
+SELECT name, population_change 
+FROM countries 
+ORDER BY population_change DESC LIMIT 10;
+
+--Which 10 countries have the lowest population change?
+SELECT name, population_change 
+FROM countries 
+ORDER BY population_change ASC LIMIT 10;
+
+--Which country has the highest population change?
+SELECT name, population_change
+FROM countries
+WHERE population_change = (SELECT MAX(population_change) FROM countries);
+
+--Which country has the lowest population change?
+SELECT name, population_change
+FROM countries
+WHERE population_change = ( 
+SELECT MIN(population_change) 
+FROM countries);
+
+--Which 20 countries are the biggest based on square km?
+SELECT name, area_sq_km
+FROM countries
+ORDER BY area_sq_km DESC LIMIT 20;
+
+--Which 20 countries are the smallest based on square km?
+SELECT name, area_sq_km
+FROM countries
+ORDER BY area_sq_km ASC LIMIT 20;
+
+
+--Which country is the largest in area?
+SELECT name, area_sq_km
+FROM countries
+WHERE area_sq_km = (
+SELECT MAX(area_sq_km)
+FROM countries);
+
+--Which country is the smallest in area?
+SELECT name, area_sq_km
+FROM countries
+WHERE area_sq_km = (
+SELECT MIN(area_sq_km)
+FROM countries);
+
+--How does density per square km relate to the size of a country? (Limit to 10 largest countries)
+SELECT name, area_sq_km, density_per_sq_km
+FROM countries ORDER BY area_sq_km DESC LIMIT 10;
+
+--How does density per square km relate to the size of a country? (Limit to 10 countries with the highest density)
+SELECT name, area_sq_km, density_per_sq_km
+FROM countries ORDER BY density_per_sq_km DESC LIMIT 10;
+
+--How does density per square km relate to the size of a country? (Limit to 10 countries with the lowest density)
+SELECT name, area_sq_km, density_per_sq_km
+FROM countries ORDER BY density_per_sq_km ASC LIMIT 10;
+
+--Categorize countries based on their population density per square km:
+--"Sparse" for countries with low density, "Not very crowded" for medium-low density, "Moderately Crowded" for medium density, "Crowded" for high density, and "Extremely Crowded" for very high density
+
+SELECT name, density_per_sq_km, 
+    CASE
+        WHEN density_per_sq_km <= 10 THEN "Sparse"
+        WHEN density_per_sq_km >= 11 AND density_per_sq_km < 50 THEN "Not very crowded"
+        WHEN density_per_sq_km >= 50 AND density_per_sq_km < 100 THEN "Moderately Crowded"
+        WHEN density_per_sq_km >= 100 AND density_per_sq_km < 500 THEN "Crowded"
+        ELSE "Extremely Crowded"
+    END AS density_category
+FROM countries
+ORDER BY density_per_sq_km DESC;
+
+--How many countries fall into each of the density categories?
+SELECT 
+    CASE
+        WHEN density_per_sq_km <= 10 THEN "Sparse"
+        WHEN density_per_sq_km >= 11 AND density_per_sq_km < 50 THEN "Not very crowded"
+        WHEN density_per_sq_km >= 50 AND density_per_sq_km < 100 THEN "Moderately Crowded"
+        WHEN density_per_sq_km >= 100 AND density_per_sq_km < 500 THEN "Crowded"
+        ELSE "Extremely Crowded"
+END AS density_category,
+COUNT(*) AS number_of_countries
+FROM countries
+GROUP BY density_category
+ORDER BY number_of_countries DESC;
