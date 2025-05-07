@@ -1,0 +1,100 @@
+-- Exploratory Data Analysis
+
+-- Companies with the highest number of total layoffs
+SELECT company, 
+	MAX(total_laid_off) AS max_total_laid_off
+FROM layoffs_staging2
+GROUP BY company
+ORDER BY max_total_laid_off DESC;
+
+-- Companies with the highest percentage of employees laid off
+-- Shows both layoff percentage and scale (total laid off)
+SELECT company, 
+	MAX(total_laid_off) AS max_total_laid_off,
+	MAX(percentage_laid_off) AS max_percentage_laid_off
+FROM layoffs_staging2
+GROUP BY company
+ORDER BY max_percentage_laid_off DESC;
+
+-- Companies that laid off 100% of their workforce
+-- Ordered by the amount of funds raised
+SELECT *
+FROM layoffs_staging2
+WHERE percentage_laid_off = 1 
+ORDER BY funds_raised_millions;
+
+-- Date range of recorded layoffs
+SELECT MIN(date), MAX(date)
+FROM layoffs_staging2;
+
+-- What industry had the highest layoffs
+SELECT industry, 
+	SUM(total_laid_off) AS total_layoffs
+FROM layoffs_staging2
+GROUP BY industry
+ORDER BY total_layoffs DESC;
+
+-- Ranked industries by total layoffs using SQL window functions 
+-- highlighting which sectors were most impacted
+SELECT industry,
+       SUM(total_laid_off) AS total_layoffs,
+       RANK() OVER (ORDER BY SUM(total_laid_off) DESC) AS ranking
+FROM layoffs_staging2
+GROUP BY industry
+ORDER BY ranking;
+
+-- Which countries had the highest layoffs
+SELECT country, 
+	SUM(total_laid_off) AS total_layoffs
+FROM layoffs_staging2
+GROUP BY country
+ORDER BY total_layoffs DESC;
+
+-- Comparing total layoffs by year
+SELECT YEAR(`date`) AS year, 
+	SUM(total_laid_off) AS total_layoffs
+FROM layoffs_staging2
+GROUP BY year
+ORDER BY 1 DESC;
+
+-- Comparing total layoffs by month and year with separate year and month columns
+-- Ordered chronologically to see how layoffs changed over time
+SELECT YEAR(`date`) AS year,
+	MONTH(`date`) AS month,
+	SUM(total_laid_off) AS total_layoffs
+FROM layoffs_staging2
+GROUP BY year, month
+ORDER BY year DESC, month DESC;
+
+-- Comparing total layoffs by month and year
+-- Ordered by the highest number of layoffs, not by chronological order to identify peak layoff periods
+SELECT YEAR(`date`) AS year,
+	MONTH(`date`) AS month,
+	SUM(total_laid_off) AS total_layoffs
+FROM layoffs_staging2
+GROUP BY year, month
+ORDER BY total_layoffs DESC;
+
+-- Total layoffs by country, year, and month
+-- To see which countries were most affected during specific months
+SELECT country,
+	YEAR(`date`) AS year,
+	MONTH(`date`) AS month,
+	SUM(total_laid_off) AS total_layoffs
+FROM layoffs_staging2
+GROUP BY country, year, month
+ORDER BY total_layoffs DESC;
+
+-- Total layoffs by country and year
+-- To see how  each country was impacted annually
+SELECT country,
+	YEAR(`date`) AS year,
+	SUM(total_laid_off) AS total_layoffs
+FROM layoffs_staging2
+GROUP BY country, year
+ORDER BY total_layoffs DESC;
+
+
+
+
+
